@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{% static 'auth/style.css' %}">
+    <title>Saytga Kirish</title>
+</head>
+
+    <body>
+        <section>
+            <form method="post">
+                {% csrf_token %}
+                <h1>Login</h1>
+                <div class="inputbox">
+                    <input type="tel" name="phone" required>
+                    <label for="">Telefon raqam</label>
+                </div>
+                <div class="inputbox">
+                    <input type="password" required>
+                    <label for="">Parol</label>
+                </div>
+                <div class="forget">
+                  <a href="#">Parolni Unutdingizmi?</a>
+                </div>
+                <button>Kirish</button>
+                <div class="register">
+                    <p>Hisobingiz yo'qmi <a href="{% url 'register' %}">Ro'yxatdan o'ting</a></p>
+                </div>
+            </form>
+        </section>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </body>
+
+</html>

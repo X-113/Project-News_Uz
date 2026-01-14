@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+	<div class="container wrapper">
+		<div class="longrek"></div>
+		<div class="clearfix"></div>
+		
+		<ol class="breadcrumb">
+			<li><a href="{% url 'home' %}">Bosh Sahifa</a></li>
+			<li class="active">Aloqa</li>
+		</ol>
+		<div class="row">
+			<div class="col-md-5 col-xs-12">
+				<div class="cat_title">Kontaktlar</div>
+				<div class="con_info">News.uz internet-nashri O'zbekistonning ijtimoiy-siyosiy,sotsial-iqtisodiy,madaniy va sport hayoti,dunyoda ro'y berayotgan voqealarni yoritib boradi.</div>
+				<ul class="contact">
+					<li><i class="fa fa-map-marker"></i> Navoiy sh., O'zbekiston ko'chasi, 158 uy</li>
+					<li><i class="fa fa-print"></i> +99894 233-20-03</li>
+					<li><i class="fa fa-mobile"></i> +99894 597-03-26</li>
+					<li><i class="fa fa-envelope"></i> samandaribodullayev003@gmail.com</li>
+				</ul>
+				<div class="feedback">
+					<div class="title">Fikr-mulohaza</div>
+					<div class="title" style="font-size: 20px; background-color: #00ff00;">{{ javob }}</div>
+					<form method="post">
+						{% csrf_token %}
+						<input type="text" name="user" placeholder="Sizning Ismingiz">
+						<input type="text" name="phone" placeholder="Telefon raqam">
+						<textarea name="message" id="" cols="30" rows="10" placeholder="Xabar"></textarea>
+						<button class="btn submit" type="submit">Jo'natish</button>
+					</form>
+				</div>
+			</div>
+			<div class="col-md-7 col-xs-12">
+				<div class="con_img">
+					<img src="{% static 'img/contact.jpg' %}" alt="">
+				</div>
+				<div class="map"></div>
+			</div>
+		</div>
+		<div class="foot_rek">
+			<img src="{% static 'img/foootrek.jpg' %}" alt="">
+		</div>
+	</div>
+{% endblock %}

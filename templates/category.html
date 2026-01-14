@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+	<div class="container wrapper">
+		<div class="longrek"></div>
+		<div class="clearfix"></div>
+		
+		<ol class="breadcrumb">
+			<li><a href="{% url 'home' %}">Bosh Sahifa</a></li>
+			<li class="active">{{ ctg.name }}</li>
+		</ol>
+
+		{% if error == 404 %}
+			{% include 'partials/404.html' %}
+
+		{% else %}
+		<div class="row">
+			<div class="col-md-8 col-xs-12">
+				<div class="cat_title">{{ ctg.name }}</div>
+				<div class="big_fav pop_cat">
+				<div id="bigfav" class="carousel slide" data-ride="carousel">
+					<div class="carousel-inner" role="listbox">
+						<div class="item active">
+							<img src="{{ news.0.image.url }}" alt="...">
+								<a href="{% url 'view' pk=news.0.id %}">
+									<div class="carousel-caption">
+										<div class="caption_pos">
+											<div class="type_news">{{ news.0.ctg.name }}</div>
+											<div class="title">{{ news.0.title }}</div>
+											<span class="date">{{ news.0.get_date }}</span>
+										</div>
+									</div>
+								</a>
+						</div>
+					</div>
+
+				</div>
+			</div>
+				<div class="news_box">
+
+					{% for i in news %}
+					{% if forloop.counter > 1 %}
+					<div class="cat_news">
+						<div class="cat_img"><img src="{{ i.image.url }}" alt=""></div>
+						<a href="{% url 'view' pk=i.id %}">{{ i.title }}</a>
+						<p>{{ i.short_desc }}</p>
+						<span class="date">{{ i.get_date }}</span>
+						<span class="news_type"><i class="fa fa-pencil"></i> {{ i.ctg.name }}</span>
+						<span class="news_type"><i class="fa fa-eye"></i> {{ i.views }}</span>
+					</div>
+					{% endif %}
+					{% endfor %}
+
+
+					{% if news.has_other_pages %}
+					<nav aria-label="Page navigation">
+						<ul class="pagination">
+
+							{% if news.has_previous %}
+							<li>
+								<a href="?page={{ news.previous_page_number }}" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							{% endif %}
+
+							{% for i in paginator.page_range %}
+
+								{% if page == i %}
+									<li class="active"><a>{{ i }}</a></li>
+								{% else %}
+									<li><a href="?page={{ i }}">{{ i }}</a></li>
+								{% endif %}
+
+							{% endfor %}
+
+
+							{% if news.has_next %}
+							<li>
+								<a href="?page={{ news.next_page_number }}" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+							{% endif %}
+
+						</ul>
+					</nav>
+					{% endif %}
+
+
+				</div>
+			</div>
+			{% include 'partials/fresh.html' %}
+		</div>
+		{% endif %}
+
+
+	</div>
+{% endblock %}
+	

@@ -1,0 +1,89 @@
+{% load static %}
+
+
+<div class="col-md-4 col-xs-12">
+    <div class="head_title">So'nggi Yangiliklar</div>
+    <div id="listnews" class="carousel slide listnews" data-ride="carousel">
+        <div class="news_box">
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <ul class="list_news">
+
+                       {% for i in fresh_news %}
+                            {% if forloop.counter <= 4 %}
+                            <li>
+                                <div class="list_img"><img src="{{ i.image.url }}" alt=""></div>
+                                <a href="{% url 'view' pk=i.id %}">{{ i.title }}</a>
+                                <span class="date">{{ i.get_date }}</span>
+                                <span class="news_type"><i class="fa fa-eye"></i>{{ i.views }}</span>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <div class="item">
+                    <ul class="list_news">
+                        {% for i in fresh_news %}
+                            {% if 4 < forloop.counter  %}
+                            <li>
+                            <div class="list_img"><img src="{{ i.image.url }}" alt=""></div>
+                            <a href="{% url 'view' pk=i.id %}">{{ i.title }}</a>
+                            <span class="date">{{ i.get_date }}</span>
+                            <span class="news_type"><i class="fa fa-eye"></i>{{ i.views }}</span>
+                        </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="indi_box">
+            <ol class="carousel-indicators">
+                <li data-target="#listnews" data-slide-to="0" class="active"></li>
+                <li data-target="#listnews" data-slide-to="1"></li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="head_title colum">FAN VA TEXNIKA</div>
+
+        <div class="news_box colums">
+
+                    <ul class="list_news">
+
+                    {% for i in news %}
+                        <li>
+                            <div class="list_img"><img src="{{ i.image.url }}" alt=""></div>
+                            <a href="{% url 'view' pk=i.id %}">{{ i.title }}</a>
+                            <span class="date">{{ i.get_date }}</span>
+                            <span class="news_type"><i class="fa fa-eye"></i> {{ i.views }}</span>
+                        </li>
+                    {% endfor %}
+
+                    </ul>
+
+        </div>
+
+
+    <div class="news_box rek">
+        <div class="rek_right">
+
+        </div>
+    </div>
+    <div class="subscribe">
+        <div class="title"><b>News.uz</b> saytimizga Obuna bo'ling</div>
+        <form action="{% url 'subs_add' %}?path={{ request.path }}" method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="email" placeholder="Email" required>
+                <button class="submit">Obuna bo'lish</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+
+

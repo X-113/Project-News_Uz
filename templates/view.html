@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_style %}
+
+<style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .comment { max-width: 600px; margin: auto; }
+        .title { font-size: 1.5em; margin-bottom: 10px; }
+        .title mark { background-color: rgba(88, 88, 88, 0.2); padding: 2px 6px; border-radius: 4px; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 15px; }
+        .com_info { background: #f9f9f9; padding: 10px; border-radius: 8px; }
+        .author { font-weight: bold; color: #333; }
+        .date { font-size: 0.8em; color: #777; margin-top: 5px; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 8px 0; }
+        .sub { margin-left: 30px; margin-top: 10px; }
+        .sub .com_info { background: #eef; }
+        .btn {
+            background: #007bff; color: white; border: none;
+            padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .reply-form, .main-comment-form {
+            margin-top: 10px; display: none;
+            background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 6px;
+        }
+        .reply-form input, .reply-form textarea,
+        .main-comment-form input, .main-comment-form textarea {
+            width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .add_info { font-size: 0.85em; color: #555; margin-top: 10px; }
+        .show { display: block !important; }
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+	<div class="container wrapper">
+		<div class="longrek"></div>
+		<div class="clearfix"></div>
+		
+		<ol class="breadcrumb">
+			<li><a href="{% url 'home' %}">Bosh Sahifa</a></li>
+			<li><a href="{% url 'ctg' slug=new.ctg.slug %}">{{ new.ctg.name }}</a></li>
+			<li class="active">{{ new.title }}</li>
+		</ol>
+		<div class="row">
+			<div class="col-md-8 col-xs-12">
+				<div class="view_img"><img src="{{ new.image.url }}" alt=""></div>
+				<div class="news_box view">
+					<div class="view_title">{{ new.title }}</div>
+					<span class="date">{{ new.get_date }}</span>
+					<span class="news_type"><i class="fa fa-pencil"></i> {{ new.ctg.name }}</span>
+					<span class="news_type"><i class="fa fa-eye"></i> {{ new.views }}</span>
+					<div class="view_desc">
+
+						{% for i in new.get_short %}
+						<p><b>{{ i }}</b></p>
+						{% endfor %}
+
+
+						{% if new.images.all %}
+						<div id="bigfav" class="carousel slide view_slide" data-ride="carousel">
+						<div class="carousel-inner" role="listbox">
+
+							<div class="item active">
+								<img src="{{ new.image.url }}" alt="...">
+							</div>
+
+							{% for i in new.images.all %}
+							<div class="item">
+								<img src="{{ i.img.url }}" alt="...">
+							</div>
+							{% endfor %}
+
+						</div>
+						<div class="control">
+						<a class="left carousel-control" href="#bigfav" role="button" data-slide="prev">
+							<i class="fa fa-angle-left"></i>
+						</a>
+						<a class="right carousel-control" href="#bigfav" role="button" data-slide="next">
+							<i class="fa fa-angle-right"></i>
+						</a>
+						</div>
+					</div>
+						{% endif %}
+
+
+						{% for i in new.get_desc %}
+						<p>{{ i }}</p>
+						{% endfor %}
+
+				</div>
+				<ul class="tag">
+					{% for i in new.get_tags %}
+					<li><a href="{% url 'search'  %}?search={{ i }}">#{{ i }}</a></li>
+					{% endfor %}
+				</ul>
+				<div class="nav_news">
+					<a href="#" class="prev_news text-right">
+						<i class="fa fa-angle-left"></i>
+						Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+					</a>
+					<a href="#" class="next_news">
+						Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+						<i class="fa fa-angle-right"></i>
+					</a>
+					<div class="clearfix"></div>
+				</div>
+
+				<div class="comment">
+					<div class="title">Izohlar <mark style="background-color: rgba(88, 88, 88, 0.2);">{{ count }}</mark></div>
+					<ul id="comments-list">
+
+						{% for i in comments %}
+						<li class="main-comment">
+							<div class="com_info">
+								<div class="author">{{ i.user }}</div>
+								<p>{{ i.message }}</p>
+								<div class="date">{{ i.get_date }}</div>
+								<hr>
+								<button class="btn reply-btn" onclick="show_answer({{ i.id }})">Izoh yozish</button>
+							</div>
+
+							<!-- Sub-izohlar uchun forma (dastlab yashirin) -->
+							<form method="post" class="reply-form" id="comment_form_{{ i.id }}">
+								{% csrf_token %}
+								<input type="number" name="parent_id" value="{{ i.id }}" hidden>
+								<input type="text" name="user" placeholder="Ismingiz" class="reply-user" required>
+								<textarea name="message" placeholder="Izohingiz..." class="reply-message" rows="3" required></textarea>
+								<button class="btn submit-reply" data-parent="{{ i.id }}">Yuborish</button>
+								<button  type="button" class="btn cancel-reply" style="background: #ccc;" onclick="hide_answer({{ i.id }})">Bekor qilish</button>
+							</form>
+
+							{% if i.subs.all %}
+							<ul class="sub">
+								{% for sub in i.subs.all %}
+								<li>
+									<div class="com_info">
+										<div class="author">{{ sub.user }}</div>
+										<p>{{ sub.message }}</p>
+										<div class="date">{{ sub.get_date }}</div>
+										<hr>
+									</div>
+								</li>
+								{% endfor %}
+							</ul>
+							{% endif %}
+						</li>
+						{% endfor %}
+
+					</ul>
+
+					<!-- Asosiy komment qo'shish -->
+					<form method="post" class="main-comment-form" style="display: block;">
+						{% csrf_token %}
+						<input type="text" id="main-user" name="user"  placeholder="Ismingiz" required>
+						<textarea id="main-message" name="message"  placeholder="Izohingiz..." rows="4" required></textarea>
+						<button class="btn" id="submit-main">Yuborish</button>
+						<button class="btn cancel-main" style="background: #ccc;">Bekor qilish</button>
+					</form>
+					<div class="add_info">Приветствуются интересные и осмысленные комментарии по теме материала.</div>
+				</div>
+				</div>
+			</div>
+
+			{% include 'partials/fresh.html' %}
+		</div>
+	</div>
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+	function show_answer(comment_id){
+		console.log('keldi')
+		form_id = `comment_form_${comment_id}`
+		document.getElementById(form_id).style.display = 'block'
+	}
+
+	function hide_answer(comment_id){
+		form_id = `comment_form_${comment_id}`
+		document.getElementById(form_id).style.display = 'none'
+	}
+
+</script>
+{% endblock %}
+
+
+
+
